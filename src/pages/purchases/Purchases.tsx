@@ -50,7 +50,7 @@ export default function Purchases() {
       </div>
 
       <Async isLoading={isLoading} isError={isError} isEmpty={!!data && data.items.length === 0}>
-        <div className="overflow-hidden rounded-2xl border border-white/10">
+        <div className="overflow-hidden rounded-2xl border border-border">
           <Table>
             <THead>
               <TR><TH>Date</TH><TH>Supplier</TH><TH className="text-right">Total</TH><TH>Status</TH><TH className="text-right">Actions</TH></TR>
@@ -167,9 +167,9 @@ function PurchaseDialog({ onClose }: { onClose: () => void }) {
           <div className="relative flex-1">
             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search to add an EXISTING product…" />
             {search && products && products.items.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full rounded-md border border-white/10 bg-[#0a1330]">
+              <div className="absolute z-10 mt-1 w-full rounded-md border border-border bg-popover shadow-lg">
                 {products.items.map((p) => (
-                  <button key={p.id} className="flex w-full justify-between px-3 py-2 text-left text-sm hover:bg-white/5" onClick={() => addExisting(p)}>
+                  <button key={p.id} className="flex w-full justify-between px-3 py-2 text-left text-sm hover:bg-muted" onClick={() => addExisting(p)}>
                     <span>{p.name}</span><span className="text-muted-foreground">{formatINR(p.purchase_price)}</span>
                   </button>
                 ))}
@@ -183,7 +183,7 @@ function PurchaseDialog({ onClose }: { onClose: () => void }) {
           {lines.map((l) => {
             const selling = previewSellingPrice(l.purchasePrice, l.marginType, l.marginValue);
             return (
-              <div key={l.key} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+              <div key={l.key} className="rounded-xl border border-border bg-white/[0.03] p-3">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     {l.isNew ? "New product" : `Existing · ${l.productCode}`}
@@ -205,8 +205,8 @@ function PurchaseDialog({ onClose }: { onClose: () => void }) {
                   <MiniField label="Margin">
                     <div className="flex gap-1">
                       <select value={l.marginType} onChange={(e) => patch(l.key, { marginType: e.target.value as MarginType })} className="h-9 rounded-md border border-input bg-background px-1 text-sm">
-                        <option value="percentage" className="bg-[#0a1330]">%</option>
-                        <option value="amount" className="bg-[#0a1330]">₹</option>
+                        <option value="percentage" className="bg-popover text-popover-foreground">%</option>
+                        <option value="amount" className="bg-popover text-popover-foreground">₹</option>
                       </select>
                       <Input type="number" value={l.marginValue} onChange={(e) => patch(l.key, { marginValue: Number(e.target.value) })} className="h-9" />
                     </div>

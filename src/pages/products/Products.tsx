@@ -44,8 +44,8 @@ export default function Products() {
       </div>
 
       <Async isLoading={isLoading} isError={isError} isEmpty={!!data && data.items.length === 0}
-        empty={<div className="rounded-2xl border border-white/10 p-12 text-center text-muted-foreground">No products yet — record a purchase to add your first product.</div>}>
-        <div className="overflow-hidden rounded-2xl border border-white/10">
+        empty={<div className="rounded-2xl border border-border p-12 text-center text-muted-foreground">No products yet — record a purchase to add your first product.</div>}>
+        <div className="overflow-hidden rounded-2xl border border-border">
           <Table>
             <THead>
               <TR>
@@ -61,7 +61,7 @@ export default function Products() {
                   <TD className="font-mono text-xs">{p.product_code}</TD>
                   <TD className="font-medium">{p.name}</TD>
                   <TD className="text-right">{formatINR(p.purchase_price)}</TD>
-                  <TD className="text-right font-semibold text-indigo-300">{formatINR(p.selling_price)}</TD>
+                  <TD className="text-right font-semibold text-indigo-600 dark:text-indigo-300">{formatINR(p.selling_price)}</TD>
                   <TD className="text-right">{p.current_stock} {p.unit}</TD>
                   <TD className="text-right">{p.gst_percentage}%</TD>
                   <TD>
@@ -133,7 +133,7 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
           <Field label="Reorder Level"><Input type="number" value={reorder} onChange={(e) => setReorder(Number(e.target.value))} /></Field>
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+        <div className="rounded-xl border border-border bg-white/[0.03] p-3">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Purchase Price">
               <Input value={formatINR(product.purchase_price)} readOnly className="opacity-70" />
@@ -142,16 +142,16 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
               <div className="flex gap-2">
                 <select value={marginType} onChange={(e) => setMarginType(e.target.value as MarginType)}
                   className="h-9 rounded-md border border-input bg-background px-2 text-sm">
-                  <option value="percentage" className="bg-[#0a1330]">%</option>
-                  <option value="amount" className="bg-[#0a1330]">₹</option>
+                  <option value="percentage" className="bg-popover text-popover-foreground">%</option>
+                  <option value="amount" className="bg-popover text-popover-foreground">₹</option>
                 </select>
                 <Input type="number" value={marginValue} onChange={(e) => setMarginValue(Number(e.target.value))} />
               </div>
             </Field>
           </div>
-          <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2 text-sm">
+          <div className="mt-2 flex items-center justify-between border-t border-border pt-2 text-sm">
             <span className="text-muted-foreground">Calculated Selling Price</span>
-            <span className="text-lg font-semibold text-indigo-300">{formatINR(selling)}</span>
+            <span className="text-lg font-semibold text-indigo-600 dark:text-indigo-300">{formatINR(selling)}</span>
           </div>
         </div>
 

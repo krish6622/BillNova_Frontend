@@ -121,7 +121,7 @@ export default function Dashboard() {
               <ul className="space-y-3">
                 {data.top_products.map((p, i) => (
                   <li key={p.name} className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/5 text-xs font-bold text-muted-foreground">{i + 1}</span>
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted dark:bg-white/5 text-xs font-bold text-muted-foreground">{i + 1}</span>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{p.name}</div>
                       <div className="text-xs text-muted-foreground">{p.quantity} sold</div>
@@ -143,11 +143,11 @@ export default function Dashboard() {
           <GlassCard className="p-6">
             <h2 className="mb-4 font-semibold">Recent Bills</h2>
             {sales && sales.items.length > 0 ? (
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-border">
                 {sales.items.map((s) => (
                   <div key={s.id} className="flex items-center justify-between py-2.5">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-300"><ReceiptText className="h-4 w-4" /></span>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"><ReceiptText className="h-4 w-4" /></span>
                       <div>
                         <div className="font-mono text-sm">{s.invoice_number}</div>
                         <div className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleString("en-IN")}</div>
@@ -217,7 +217,7 @@ function Kpi({
     <motion.div variants={fade} custom={i} initial="hidden" animate="show">
       <GlassCard hover className="p-5">
         <div className="flex items-start justify-between">
-          <span className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${tint} ring-1 ring-white/10`}>
+          <span className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${tint} ring-1 ring-border`}>
             <Icon className="h-5 w-5 text-white" />
           </span>
           <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
@@ -225,7 +225,7 @@ function Kpi({
         <div className="mt-4 text-2xl font-bold tracking-tight">{value}</div>
         <div className="mt-0.5 text-xs text-muted-foreground">{label} · {sub}</div>
         {meter !== undefined && (
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted dark:bg-white/10">
             <div
               className={`h-full rounded-full ${meter >= 100 ? "bg-red-500" : meter >= 80 ? "bg-amber-500" : "bg-gradient-to-r from-indigo-500 to-violet-500"}`}
               style={{ width: `${Math.min(100, meter)}%` }}
@@ -240,9 +240,9 @@ function Kpi({
 function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/10 bg-[#0a1330] px-3 py-2 text-xs shadow-xl">
+    <div className="rounded-lg border border-border bg-popover px-3 py-2 text-xs shadow-xl">
       <div className="text-muted-foreground">{label}</div>
-      <div className="font-semibold text-indigo-300">{formatINR(payload[0].value)}</div>
+      <div className="font-semibold text-indigo-600 dark:text-indigo-300">{formatINR(payload[0].value)}</div>
     </div>
   );
 }
@@ -250,7 +250,7 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 function EmptyHint({ icon: Icon, text }: { icon: ComponentType<{ className?: string }>; text: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-muted-foreground">
+      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted dark:bg-white/5 text-muted-foreground">
         <Icon className="h-6 w-6" />
       </span>
       <p className="text-sm text-muted-foreground">{text}</p>

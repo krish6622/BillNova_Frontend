@@ -13,9 +13,11 @@ export function GlassCard({ className, hover = false, children, ...props }: Glas
       whileHover={hover ? { y: -4 } : undefined}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
       className={cn(
-        "rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl",
-        "shadow-[0_8px_32px_-12px_rgba(0,0,0,0.5)]",
-        hover && "transition-colors hover:border-white/20 hover:bg-white/[0.06]",
+        // Light: clean white surface + soft shadow. Dark: frosted glass.
+        "rounded-2xl border border-border bg-card shadow-sm",
+        "dark:border-white/10 dark:bg-white/[0.04] dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.5)] dark:backdrop-blur-xl",
+        hover &&
+          "transition-all hover:shadow-md dark:hover:border-white/20 dark:hover:bg-white/[0.06]",
         className,
       )}
       {...props}

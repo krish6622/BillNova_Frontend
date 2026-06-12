@@ -9,17 +9,55 @@ import { TBody, TD, TH, THead, TR, Table } from "@/components/ui/table";
 import { type Settings as SettingsT, useSettings, useUpdateSettings } from "@/features/settings/api";
 import { useCreateUser, useSetUserActive, useUsers } from "@/features/users/api";
 import { getApiErrorMessage } from "@/lib/api";
+import { type Theme, useTheme } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
 export default function Settings() {
   return (
     <div className="space-y-6 p-8">
       <div>
         <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground">Business profile, invoice preferences, and users.</p>
+        <p className="text-sm text-muted-foreground">Appearance, business profile, invoice preferences, and users.</p>
       </div>
+      <Appearance />
       <BusinessSettings />
       <UserManagement />
     </div>
+  );
+}
+
+function Appearance() {
+  const { theme, setTheme } = useTheme();
+  const options: { value: Theme; label: string }[] = [
+    { value: "light", label: "Light" },
+    { value: "dark", label: "Dark" },
+    { value: "system", label: "System" },
+  ];
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Appearance</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap gap-2">
+          {options.map((o) => (
+            <button
+              key={o.value}
+              onClick={() => setTheme(o.value)}
+              className={cn(
+                "rounded-xl border px-4 py-2 text-sm font-medium transition-colors",
+                theme === o.value
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border text-muted-foreground hover:bg-muted",
+              )}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">System follows your device's light/dark setting.</p>
+      </CardContent>
+    </Card>
   );
 }
 

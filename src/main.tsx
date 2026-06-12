@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "@/App";
 import { queryClient } from "@/lib/queryClient";
+import { ThemeProvider } from "@/lib/theme";
 import { useAuth } from "@/stores/auth";
 
 import "./index.css";
@@ -14,10 +15,12 @@ useAuth.getState().hydrate();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ThemeProvider>
   </React.StrictMode>,
 );

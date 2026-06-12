@@ -175,7 +175,7 @@ export default function POS() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…  (F2)"
-              className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground/60 focus:border-indigo-400/60 focus:ring-4 focus:ring-indigo-500/15"
+              className="h-11 w-full rounded-xl border border-border bg-white/5 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground/60 focus:border-indigo-400/60 focus:ring-4 focus:ring-indigo-500/15"
             />
           </div>
           <div className="mt-4 flex-1 overflow-y-auto pr-1">
@@ -213,7 +213,7 @@ export default function POS() {
             {cart.lines.map((l) => {
               const pline = preview?.items.find((i) => i.product_id === l.productId);
               return (
-                <div key={l.productId} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                <div key={l.productId} className="rounded-xl border border-border bg-white/[0.03] p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="truncate text-sm font-medium">{l.name}</div>
@@ -229,7 +229,7 @@ export default function POS() {
                       <input
                         value={l.quantity}
                         onChange={(e) => cart.setQuantity(l.productId, Number(e.target.value) || 0)}
-                        className="h-8 w-12 rounded-lg border border-white/10 bg-white/5 text-center text-sm outline-none"
+                        className="h-8 w-12 rounded-lg border border-border bg-white/5 text-center text-sm outline-none"
                       />
                       <StepBtn onClick={() => cart.setQuantity(l.productId, l.quantity + 1)}><Plus className="h-3.5 w-3.5" /></StepBtn>
                       <input
@@ -237,7 +237,7 @@ export default function POS() {
                         value={l.discount}
                         onChange={(e) => cart.setDiscount(l.productId, Number(e.target.value) || 0)}
                         placeholder="Disc"
-                        className="ml-2 h-8 w-16 rounded-lg border border-white/10 bg-white/5 px-2 text-center text-xs outline-none"
+                        className="ml-2 h-8 w-16 rounded-lg border border-border bg-white/5 px-2 text-center text-xs outline-none"
                       />
                     </div>
                     <span className="text-sm font-semibold">{formatINR(pline?.line_total ?? 0)}</span>
@@ -250,7 +250,7 @@ export default function POS() {
             value={cart.notes}
             onChange={(e) => cart.setNotes(e.target.value)}
             placeholder="Bill notes (optional)"
-            className="mt-3 h-10 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-sm outline-none placeholder:text-muted-foreground/60"
+            className="mt-3 h-10 w-full rounded-xl border border-border bg-white/5 px-3 text-sm outline-none placeholder:text-muted-foreground/60"
           />
         </GlassCard>
 
@@ -268,12 +268,12 @@ export default function POS() {
                 type="number"
                 value={cart.billDiscount}
                 onChange={(e) => cart.setBillDiscount(Number(e.target.value) || 0)}
-                className="h-8 w-24 rounded-lg border border-white/10 bg-white/5 px-2 text-right text-sm outline-none"
+                className="h-8 w-24 rounded-lg border border-border bg-white/5 px-2 text-right text-sm outline-none"
               />
             </div>
           </div>
 
-          <div className="my-4 flex items-baseline justify-between border-t border-white/10 pt-4">
+          <div className="my-4 flex items-baseline justify-between border-t border-border pt-4">
             <span className="text-sm text-muted-foreground">Grand Total</span>
             <span className="text-2xl font-bold">{formatINR(grandTotal)}</span>
           </div>
@@ -284,9 +284,9 @@ export default function POS() {
                 <select
                   value={p.mode}
                   onChange={(e) => setPayments((arr) => arr.map((x, idx) => (idx === i ? { ...x, mode: e.target.value as Mode } : x)))}
-                  className="h-10 rounded-lg border border-white/10 bg-white/5 px-2 text-sm outline-none"
+                  className="h-10 rounded-lg border border-border bg-white/5 px-2 text-sm outline-none"
                 >
-                  {MODES.map((m) => <option key={m} value={m} className="bg-[#0a1330]">{m}</option>)}
+                  {MODES.map((m) => <option key={m} value={m} className="bg-popover text-popover-foreground">{m}</option>)}
                 </select>
                 <input
                   ref={i === 0 ? paymentRef : undefined}
@@ -296,7 +296,7 @@ export default function POS() {
                     setPayTouched(true);
                     setPayments((arr) => arr.map((x, idx) => (idx === i ? { ...x, amount: Number(e.target.value) || 0 } : x)));
                   }}
-                  className="h-10 flex-1 rounded-lg border border-white/10 bg-white/5 px-3 text-right text-sm outline-none"
+                  className="h-10 flex-1 rounded-lg border border-border bg-white/5 px-3 text-right text-sm outline-none"
                 />
                 {payments.length > 1 && (
                   <button onClick={() => setPayments((arr) => arr.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-destructive">
@@ -327,17 +327,17 @@ export default function POS() {
               <Printer className="h-4 w-4" /> {createSale.isPending ? "Saving…" : "Save & Print  (F10)"}
             </motion.button>
             <div className="flex gap-2">
-              <button onClick={hold} disabled={cart.lines.length === 0} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 text-sm text-muted-foreground hover:bg-white/5 disabled:opacity-50">
+              <button onClick={hold} disabled={cart.lines.length === 0} className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border text-sm text-muted-foreground hover:bg-white/5 disabled:opacity-50">
                 <Pause className="h-4 w-4" /> Hold
               </button>
-              <button onClick={() => setConfirmClear(true)} disabled={cart.lines.length === 0} className="h-10 flex-1 rounded-xl border border-white/10 text-sm text-muted-foreground hover:bg-white/5 disabled:opacity-50">Clear</button>
+              <button onClick={() => setConfirmClear(true)} disabled={cart.lines.length === 0} className="h-10 flex-1 rounded-xl border border-border text-sm text-muted-foreground hover:bg-white/5 disabled:opacity-50">Clear</button>
             </div>
           </div>
         </GlassCard>
       </div>
 
       {/* Footer — shortcuts */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-white/10 bg-white/[0.02] px-5 py-2 text-xs text-muted-foreground backdrop-blur">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-border bg-white/[0.02] px-5 py-2 text-xs text-muted-foreground backdrop-blur">
         <Shortcut k="F2" label="Search" />
         <Shortcut k="F4" label="Hold Bill" />
         <Shortcut k="F8" label="Payment" />
@@ -357,7 +357,7 @@ export default function POS() {
         <div className="max-h-[50vh] space-y-2 overflow-auto">
           {held.length === 0 && <p className="text-sm text-muted-foreground">No held bills.</p>}
           {held.map((b) => (
-            <button key={b.id} onClick={() => restore(b)} className="flex w-full items-center justify-between rounded-xl border border-white/10 px-3 py-2.5 text-left text-sm hover:bg-white/5">
+            <button key={b.id} onClick={() => restore(b)} className="flex w-full items-center justify-between rounded-xl border border-border px-3 py-2.5 text-left text-sm hover:bg-white/5">
               <span>{b.lines.length} item(s) · {b.ts}</span>
               <span className="text-indigo-400">Resume</span>
             </button>
@@ -379,7 +379,7 @@ export default function POS() {
 
 function StepBtn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10">
+    <button onClick={onClick} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-white/5 text-muted-foreground hover:bg-white/10">
       {children}
     </button>
   );
@@ -405,14 +405,12 @@ function ProductGrid({ products, onPick, empty }: { products: Product[]; onPick:
           key={p.id}
           whileTap={{ scale: 0.96 }}
           onClick={() => onPick(p)}
-          className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition-colors hover:border-indigo-400/40 hover:bg-white/[0.07]"
+          className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-white/[0.03] p-3 text-left transition-colors hover:border-indigo-400/40 hover:bg-white/[0.07]"
         >
-          <span className="line-clamp-2 text-sm font-medium">{p.name}</span>
-          <span className="mt-1 font-mono text-[10px] text-muted-foreground">{p.product_code}</span>
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-sm font-semibold text-indigo-300">{formatINR(p.selling_price)}</span>
-            <StockBadge stock={p.current_stock} reorder={p.reorder_level} />
-          </div>
+          <span className="line-clamp-2 break-words text-sm font-medium">{p.name}</span>
+          <span className="mt-1 truncate font-mono text-[10px] text-muted-foreground">{p.product_code}</span>
+          <span className="mt-2 truncate text-sm font-semibold text-indigo-300">{formatINR(p.selling_price)}</span>
+          <StockBadge stock={p.current_stock} reorder={p.reorder_level} />
         </motion.button>
       ))}
     </div>
@@ -422,7 +420,11 @@ function ProductGrid({ products, onPick, empty }: { products: Product[]; onPick:
 function StockBadge({ stock, reorder }: { stock: number; reorder: number }) {
   const low = reorder > 0 && stock <= reorder;
   return (
-    <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium ${low ? "bg-amber-500/15 text-amber-400" : "bg-white/5 text-muted-foreground"}`}>
+    <span
+      className={`mt-1.5 max-w-full self-start truncate whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
+        low ? "bg-amber-500/15 text-amber-400" : "bg-white/5 text-muted-foreground"
+      }`}
+    >
       {stock} in stock
     </span>
   );
@@ -440,7 +442,7 @@ function Row({ label, value }: { label: string; value: number }) {
 function Shortcut({ k, label }: { k: string; label: string }) {
   return (
     <span className="flex items-center gap-1.5">
-      <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 font-mono text-[10px]">{k}</kbd>
+      <kbd className="rounded border border-border bg-white/5 px-1.5 py-0.5 font-mono text-[10px]">{k}</kbd>
       {label}
     </span>
   );
@@ -455,7 +457,7 @@ function RecentInvoices({ open, onClose }: { open: boolean; onClose: () => void 
       <div className="max-h-[50vh] space-y-1 overflow-auto">
         {data?.items.length === 0 && <p className="text-sm text-muted-foreground">No invoices yet.</p>}
         {data?.items.map((s) => (
-          <div key={s.id} className="flex items-center justify-between rounded-md border border-white/10 px-3 py-2 text-sm">
+          <div key={s.id} className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm">
             <span className="font-mono">{s.invoice_number}</span>
             <span>{formatINR(s.grand_total)}</span>
             <button onClick={() => reprint(s.id)} className="text-indigo-400 hover:text-indigo-300">Print</button>

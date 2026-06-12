@@ -18,7 +18,6 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-import { AmbientBackground } from "@/components/common/AmbientBackground";
 import { getApiErrorMessage } from "@/lib/api";
 import { useAuth } from "@/stores/auth";
 
@@ -68,8 +67,13 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex min-h-screen text-foreground">
-      <AmbientBackground />
+    // Auth is always the dark "luxury" brand experience, regardless of app theme.
+    <div className="dark relative flex min-h-screen bg-[#050B2B] text-foreground">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#050B2B]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#070f33] via-[#050B2B] to-[#0a0820]" />
+        <div className="absolute -left-40 -top-24 h-[32rem] w-[32rem] rounded-full bg-indigo-600/20 blur-[140px]" />
+        <div className="absolute -right-40 top-1/3 h-[34rem] w-[34rem] rounded-full bg-violet-600/15 blur-[150px]" />
+      </div>
       <BrandPanel />
 
       {/* Right — glass login card */}
