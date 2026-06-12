@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 
+import { UsageBanner } from "@/components/common/UsageBanner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/stores/auth";
@@ -12,6 +13,7 @@ const NAV = [
   { to: "/purchases", label: "Purchases" },
   { to: "/inventory", label: "Inventory" },
   { to: "/reports", label: "Reports" },
+  { to: "/subscription", label: "Subscription" },
   { to: "/settings", label: "Settings" },
 ];
 
@@ -58,7 +60,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Button>
         </div>
       </aside>
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 overflow-auto">
+        <UsageBanner />
+        {children}
+      </main>
     </div>
   );
 }
