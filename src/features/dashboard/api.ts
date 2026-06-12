@@ -8,6 +8,8 @@ export interface DashboardData {
   bills_this_month: number;
   subscription: { plan: string | null; limit: number; used: number; percent: number };
   low_stock_count: number;
+  trend: { date: string; total: number }[];
+  top_products: { name: string; quantity: number; amount: number }[];
 }
 
 export function useDashboard() {

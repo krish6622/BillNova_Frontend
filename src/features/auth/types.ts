@@ -23,3 +23,12 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
+
+export interface RegisterPayload {
+  business_name: string;
+  owner_name: string;
+  mobile: string;
+  email: string;
+  password: string;
+  gst_number?: string | null;
+}

@@ -3,25 +3,31 @@
 @tailwind utilities;
 
 @layer base {
+  /* BillNova — Dark Luxury Fintech design tokens.
+     Navy surfaces, indigo primary (#4F46E5), electric-purple accent (#7C3AED). */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --background: 225 72% 6%;
+    --foreground: 213 31% 95%;
+    --card: 224 47% 11%;
+    --card-foreground: 213 31% 95%;
+    --popover: 224 47% 11%;
+    --popover-foreground: 213 31% 95%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 33% 16%;
+    --secondary-foreground: 213 31% 95%;
+    --muted: 225 30% 16%;
+    --muted-foreground: 217 18% 64%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 45%;
+    --warning: 38 92% 55%;
+    --border: 222 30% 20%;
+    --input: 222 28% 18%;
+    --ring: 243 75% 64%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -50,6 +56,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 }

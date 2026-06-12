@@ -15,8 +15,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // Dev: proxy API calls to the backend container/host.
+      // Use 127.0.0.1 (not "localhost") so Node doesn't resolve to IPv6 ::1
+      // when the backend listens on IPv4 only.
       "/api": {
-        target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+        target: process.env.VITE_API_PROXY_TARGET ?? "http://127.0.0.1:8000",
         changeOrigin: true,
       },
     },

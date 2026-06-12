@@ -1,8 +1,16 @@
+import type { MarginType } from "@/features/products/types";
+
 export interface PurchaseItemInput {
-  product_id: string;
-  quantity: number;
-  purchase_price: number;
+  product_id?: string | null; // existing product
+  product_code?: string | null; // new (optional → auto PD-#####)
+  product_name?: string | null; // required for new
+  hsn_code?: string | null;
   gst_percentage: number;
+  unit?: string;
+  purchase_price: number;
+  margin_type: MarginType;
+  margin_value: number;
+  quantity: number;
 }
 
 export interface PurchaseCreate {

@@ -26,6 +26,7 @@ interface CartState {
   setBillDiscount: (value: number) => void;
   setNotes: (value: string) => void;
   clear: () => void;
+  load: (lines: CartLine[], billDiscount: number, notes: string) => void;
 }
 
 export const useCart = create<CartState>((set) => ({
@@ -86,4 +87,5 @@ export const useCart = create<CartState>((set) => ({
   setBillDiscount: (value) => set({ billDiscount: Math.max(0, value) }),
   setNotes: (value) => set({ notes: value }),
   clear: () => set({ lines: [], billDiscount: 0, notes: "" }),
+  load: (lines, billDiscount, notes) => set({ lines, billDiscount, notes }),
 }));
