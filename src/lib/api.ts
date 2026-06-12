@@ -23,6 +23,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// The auth store registers a handler so an expired/invalid token logs the user out.
+let onUnauthorized: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: () => void) {
+  onUnauthorized = handler;
+}
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    const status = error.response?.status;
+    const url = error.config?.url ?? "";
+    // Don't bounce on the login/register endpoints — those 401s are expected.
+    if (status === 401 && onUnauthorized && !url.includes("/auth/")) {
+      onUnauthorized();
+    }
+    return Promise.reject(error);
+  },
+);
+
 /** Shape of the backend error envelope (see docs §5.9). */
 export interface ApiErrorBody {
   error: { code: string; message: string; details?: Record<string, unknown> };
