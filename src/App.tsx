@@ -9,6 +9,7 @@ import Placeholder from "@/pages/Placeholder";
 import POS from "@/pages/pos/POS";
 import Products from "@/pages/products/Products";
 import Purchases from "@/pages/purchases/Purchases";
+import Reports from "@/pages/reports/Reports";
 import Subscription from "@/pages/subscription/Subscription";
 
 function Shell() {
@@ -20,7 +21,7 @@ function Shell() {
         <Route path="/products" element={<Products />} />
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/inventory" element={<Inventory />} />
-        <Route path="/reports" element={<Placeholder title="Reports" />} />
+        <Route path="/reports" element={<Reports />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/settings" element={<Placeholder title="Settings" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
