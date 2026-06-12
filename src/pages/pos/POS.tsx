@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogHeader } from "@/components/ui/dialog";
@@ -23,6 +24,7 @@ export default function POS() {
   const [payments, setPayments] = useState<PaymentInput[]>([{ mode: "Cash", amount: 0 }]);
   const [error, setError] = useState<string | null>(null);
   const [recentOpen, setRecentOpen] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const { data: products } = useProducts({ search, page: 1, limit: 8 });
   const createSale = useCreateSale();
@@ -282,13 +284,30 @@ export default function POS() {
           >
             {createSale.isPending ? "Saving…" : "Save & Print"}
           </Button>
-          <Button variant="outline" className="w-full" onClick={cart.clear}>
+          <Button
+            variant="outline"
+            className="w-full"
+            disabled={cart.lines.length === 0}
+            onClick={() => setConfirmClear(true)}
+          >
             Clear Cart
           </Button>
         </div>
       </div>
 
       <RecentInvoices open={recentOpen} onClose={() => setRecentOpen(false)} />
+
+      <ConfirmDialog
+        open={confirmClear}
+        title="Clear the cart?"
+        description="All items and payment entries will be removed."
+        confirmLabel="Clear"
+        onConfirm={() => {
+          cart.clear();
+          setConfirmClear(false);
+        }}
+        onCancel={() => setConfirmClear(false)}
+      />
     </div>
   );
 }

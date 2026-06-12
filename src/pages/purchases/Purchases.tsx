@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Async } from "@/components/common/Async";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export default function Purchases() {
   const { data, isLoading, isError } = usePurchases(page, LIMIT);
   const cancel = useCancelPurchase();
   const [formOpen, setFormOpen] = useState(false);
+  const [toCancel, setToCancel] = useState<string | null>(null);
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / LIMIT)) : 1;
 
@@ -65,7 +67,7 @@ export default function Purchases() {
                   </TD>
                   <TD className="text-right">
                     {p.status === "active" && (
-                      <Button variant="destructive" size="sm" disabled={cancel.isPending} onClick={() => cancel.mutate(p.id)}>
+                      <Button variant="destructive" size="sm" onClick={() => setToCancel(p.id)}>
                         Cancel
                       </Button>
                     )}
@@ -87,6 +89,18 @@ export default function Purchases() {
       </Async>
 
       {formOpen && <PurchaseDialog onClose={() => setFormOpen(false)} />}
+
+      <ConfirmDialog
+        open={!!toCancel}
+        title="Cancel this purchase?"
+        description="Stock added by this purchase will be reversed."
+        confirmLabel="Cancel Purchase"
+        pending={cancel.isPending}
+        onConfirm={() => {
+          if (toCancel) cancel.mutate(toCancel, { onSuccess: () => setToCancel(null) });
+        }}
+        onCancel={() => setToCancel(null)}
+      />
     </div>
   );
 }

@@ -50,3 +50,11 @@ The SPA talks to the backend only through the shared Axios client (`src/lib/api.
 docker build -t billnova-frontend .
 docker run -p 8080:80 billnova-frontend     # serves dist/ via nginx
 ```
+
+## Pages (Phase 1 — all implemented)
+
+Login · Dashboard (KPI cards) · Billing POS (search, cart, live GST, split payments, print/reprint) ·
+Products (CRUD, search, pagination) · Purchases (line items, cancel) · Inventory (stock, ledger, adjust,
+low-stock) · Reports (sales/GST/HSN/stock + PDF/Excel export) · Subscription (usage + plans) ·
+Settings (profile, invoice prefs, GST defaults, user management). A global usage banner warns at 80% /
+blocks at 100%. Destructive actions use confirmation dialogs; every data view has loading/empty/error states.
