@@ -5,11 +5,11 @@ import { AppShell } from "@/components/layout/AppShell";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import Inventory from "@/pages/inventory/Inventory";
-import Placeholder from "@/pages/Placeholder";
 import POS from "@/pages/pos/POS";
 import Products from "@/pages/products/Products";
 import Purchases from "@/pages/purchases/Purchases";
 import Reports from "@/pages/reports/Reports";
+import Settings from "@/pages/settings/Settings";
 import Subscription from "@/pages/subscription/Subscription";
 
 function Shell() {
@@ -23,7 +23,7 @@ function Shell() {
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/subscription" element={<Subscription />} />
-        <Route path="/settings" element={<Placeholder title="Settings" />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppShell>
