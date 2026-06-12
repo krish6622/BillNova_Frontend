@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import Placeholder from "@/pages/Placeholder";
+import POS from "@/pages/pos/POS";
 import Products from "@/pages/products/Products";
 
 function Shell() {
@@ -12,7 +13,7 @@ function Shell() {
     <AppShell>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/pos" element={<Placeholder title="Billing POS" />} />
+        <Route path="/pos" element={<POS />} />
         <Route path="/products" element={<Products />} />
         <Route path="/purchases" element={<Placeholder title="Purchases" />} />
         <Route path="/inventory" element={<Placeholder title="Inventory" />} />
