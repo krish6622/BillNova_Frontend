@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TBody, TD, TH, THead, TR, Table } from "@/components/ui/table";
 import { useProducts, useUpdateProduct } from "@/features/products/api";
-import { previewSellingPrice, type MarginType, type Product } from "@/features/products/types";
+import { previewSellingPrice, type Product } from "@/features/products/types";
 import { fetchLedger } from "@/features/inventory/api";
 import type { LedgerEntry } from "@/features/inventory/types";
 import { getApiErrorMessage } from "@/lib/api";
@@ -35,7 +35,7 @@ export default function Products() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Product Catalogue</h1>
         <p className="text-sm text-muted-foreground">
-          Products are created from purchases. Edit pricing, margin and status here.
+          Products are created from purchases. Edit pricing, markup and status here.
         </p>
       </div>
 
@@ -100,12 +100,11 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
   const [unit, setUnit] = useState(product.unit);
   const [gst, setGst] = useState(product.gst_percentage);
   const [reorder, setReorder] = useState(product.reorder_level);
-  const [marginType, setMarginType] = useState<MarginType>(product.margin_type);
-  const [marginValue, setMarginValue] = useState(product.margin_value);
+  const [markupAmount, setMarkupAmount] = useState(product.markup_amount);
   const [active, setActive] = useState(product.is_active);
   const [error, setError] = useState<string | null>(null);
 
-  const selling = previewSellingPrice(product.purchase_price, marginType, marginValue);
+  const selling = previewSellingPrice(product.purchase_price, markupAmount);
 
   const save = async () => {
     setError(null);
@@ -113,7 +112,7 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
       await update.mutateAsync({
         id: product.id,
         input: { name, hsn_code: hsn || null, unit, gst_percentage: gst, reorder_level: reorder,
-          margin_type: marginType, margin_value: marginValue, is_active: active },
+          markup_amount: markupAmount, is_active: active },
       });
       onClose();
     } catch (err) {
@@ -123,7 +122,7 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogHeader title={`Edit · ${product.product_code}`} description="Selling price is derived from the margin." />
+      <DialogHeader title={`Edit · ${product.product_code}`} description="Selling price = purchase price + markup amount." />
       <div className="space-y-3">
         <Field label="Product Name"><Input value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <div className="grid grid-cols-2 gap-3">
@@ -138,15 +137,8 @@ function EditDialog({ product, onClose }: { product: Product; onClose: () => voi
             <Field label="Purchase Price">
               <Input value={formatINR(product.purchase_price)} readOnly className="opacity-70" />
             </Field>
-            <Field label="Margin">
-              <div className="flex gap-2">
-                <select value={marginType} onChange={(e) => setMarginType(e.target.value as MarginType)}
-                  className="h-9 rounded-md border border-input bg-background px-2 text-sm">
-                  <option value="percentage" className="bg-popover text-popover-foreground">%</option>
-                  <option value="amount" className="bg-popover text-popover-foreground">₹</option>
-                </select>
-                <Input type="number" value={marginValue} onChange={(e) => setMarginValue(Number(e.target.value))} />
-              </div>
+            <Field label="Markup (₹)">
+              <Input type="number" value={markupAmount} onChange={(e) => setMarkupAmount(Number(e.target.value))} />
             </Field>
           </div>
           <div className="mt-2 flex items-center justify-between border-t border-border pt-2 text-sm">

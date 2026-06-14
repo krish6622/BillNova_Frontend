@@ -63,6 +63,18 @@
     @apply bg-background text-foreground font-sans antialiased;
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   }
+
+  /* CR-2.7: remove browser up/down spinner controls on numeric fields — values
+     are entered manually. type="number" is kept for mobile numeric keypads. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

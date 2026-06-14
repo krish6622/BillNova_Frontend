@@ -6,34 +6,61 @@ import {
   LogOut,
   Package,
   Receipt,
+  ReceiptText,
   Settings,
   Truck,
+  Users as UsersIcon,
   Zap,
 } from "lucide-react";
-import type { ComponentType, ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { type ComponentType, type ReactNode, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { AmbientBackground } from "@/components/common/AmbientBackground";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { UsageBanner } from "@/components/common/UsageBanner";
+import { can, roleLabel, type Permission } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/stores/auth";
 
-const NAV: { to: string; label: string; icon: ComponentType<{ className?: string }> }[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/pos", label: "Billing POS", icon: Zap },
-  { to: "/products", label: "Products", icon: Package },
-  { to: "/purchases", label: "Purchases", icon: Truck },
-  { to: "/inventory", label: "Inventory", icon: Boxes },
-  { to: "/reports", label: "Reports", icon: BarChart3 },
-  { to: "/subscription", label: "Subscription", icon: CreditCard },
-  { to: "/settings", label: "Settings", icon: Settings },
+// Each item declares the permission required to see it; the sidebar is rendered
+// dynamically from the signed-in user's role (mirrors the route guards in App.tsx).
+const NAV: {
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  permission: Permission;
+}[] = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, permission: "dashboard:view" },
+  { to: "/pos", label: "Billing POS", icon: Zap, permission: "sale:create" },
+  { to: "/invoices", label: "Invoice Register", icon: ReceiptText, permission: "invoice:view" },
+  { to: "/products", label: "Products", icon: Package, permission: "product:manage" },
+  { to: "/purchases", label: "Purchases", icon: Truck, permission: "purchase:manage" },
+  { to: "/inventory", label: "Inventory", icon: Boxes, permission: "inventory:view" },
+  { to: "/reports", label: "Reports", icon: BarChart3, permission: "report:view" },
+  { to: "/users", label: "Users", icon: UsersIcon, permission: "user:manage" },
+  { to: "/subscription", label: "Subscription", icon: CreditCard, permission: "settings:manage" },
+  { to: "/settings", label: "Settings", icon: Settings, permission: "settings:manage" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const user = useAuth((s) => s.user);
   const tenant = useAuth((s) => s.tenant);
   const logout = useAuth((s) => s.logout);
+  const navigate = useNavigate();
+
+  const nav = NAV.filter((item) => can(user?.role, item.permission));
+
+  // Global shortcut: F9 jumps to the Invoice Register from anywhere.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "F9") {
+        e.preventDefault();
+        navigate("/invoices");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [navigate]);
 
   return (
     <div className="flex min-h-screen text-foreground">
@@ -51,7 +78,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 px-3">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -83,7 +110,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </span>
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium">{user.name}</div>
-                <div className="text-xs text-muted-foreground">{user.role}</div>
+                <div className="text-xs text-muted-foreground">{roleLabel(user.role)}</div>
               </div>
             </div>
           )}

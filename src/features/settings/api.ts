@@ -10,9 +10,10 @@ export interface Settings {
   gst_number: string | null;
   address: string | null;
   place_of_supply: "intra" | "inter";
-  gst_mode_default: "inclusive" | "exclusive";
   invoice_prefix: string;
   invoice_footer: string | null;
+  invoice_type: "thermal_80" | "thermal_58" | "a4";
+  show_branding: boolean;
 }
 
 export function useSettings() {

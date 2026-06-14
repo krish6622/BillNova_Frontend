@@ -32,6 +32,14 @@ export function useTopSellingProducts(limit = 12) {
   });
 }
 
+export function useNextProductCode() {
+  return useQuery({
+    queryKey: [KEY, "next-code"],
+    queryFn: async () => (await api.get<{ product_code: string }>("/products/next-code")).data.product_code,
+    staleTime: 0,
+  });
+}
+
 export function useUpdateProduct() {
   const qc = useQueryClient();
   return useMutation({

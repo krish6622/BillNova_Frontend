@@ -41,3 +41,12 @@ export function useSetUserActive() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["users"] }),
   });
 }
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: async ({ id, password }: { id: string; password: string }) => {
+      const { data } = await api.post<AppUser>(`/users/${id}/reset-password`, { password });
+      return data;
+    },
+  });
+}

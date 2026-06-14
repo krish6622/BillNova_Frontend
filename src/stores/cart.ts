@@ -11,28 +11,29 @@ export interface CartLine {
   hsnCode: string | null;
   quantity: number;
   discount: number;
-  notes: string;
 }
 
 interface CartState {
   lines: CartLine[];
   billDiscount: number;
-  notes: string;
   addProduct: (p: Product) => void;
   setQuantity: (productId: string, quantity: number) => void;
   setDiscount: (productId: string, discount: number) => void;
-  setLineNotes: (productId: string, notes: string) => void;
   remove: (productId: string) => void;
   setBillDiscount: (value: number) => void;
-  setNotes: (value: string) => void;
   clear: () => void;
-  load: (lines: CartLine[], billDiscount: number, notes: string) => void;
+  load: (lines: CartLine[], billDiscount: number) => void;
 }
 
+/**
+ * CR-7: cart store holds ONLY line items + bill discount. Payment/customer/GST-display
+ * live in the checkout store, so updating payment never re-renders the cart and vice
+ * versa. Actions are stable references — selector subscribers (e.g. the product grid that
+ * only needs `addProduct`) don't re-render on line changes.
+ */
 export const useCart = create<CartState>((set) => ({
   lines: [],
   billDiscount: 0,
-  notes: "",
 
   addProduct: (p) =>
     set((state) => {
@@ -56,7 +57,6 @@ export const useCart = create<CartState>((set) => ({
             hsnCode: p.hsn_code,
             quantity: 1,
             discount: 0,
-            notes: "",
           },
         ],
       };
@@ -76,16 +76,10 @@ export const useCart = create<CartState>((set) => ({
       ),
     })),
 
-  setLineNotes: (productId, notes) =>
-    set((state) => ({
-      lines: state.lines.map((l) => (l.productId === productId ? { ...l, notes } : l)),
-    })),
-
   remove: (productId) =>
     set((state) => ({ lines: state.lines.filter((l) => l.productId !== productId) })),
 
   setBillDiscount: (value) => set({ billDiscount: Math.max(0, value) }),
-  setNotes: (value) => set({ notes: value }),
-  clear: () => set({ lines: [], billDiscount: 0, notes: "" }),
-  load: (lines, billDiscount, notes) => set({ lines, billDiscount, notes }),
+  clear: () => set({ lines: [], billDiscount: 0 }),
+  load: (lines, billDiscount) => set({ lines, billDiscount }),
 }));

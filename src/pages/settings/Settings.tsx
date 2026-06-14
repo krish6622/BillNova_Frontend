@@ -85,9 +85,10 @@ function BusinessSettings() {
         gst_number: form.gst_number,
         address: form.address,
         place_of_supply: form.place_of_supply,
-        gst_mode_default: form.gst_mode_default,
         invoice_prefix: form.invoice_prefix,
         invoice_footer: form.invoice_footer,
+        invoice_type: form.invoice_type,
+        show_branding: form.show_branding,
       });
       setMsg("Settings saved.");
     } catch (err) {
@@ -109,12 +110,6 @@ function BusinessSettings() {
             <Text label="GST Number" value={form.gst_number ?? ""} onChange={(v) => set("gst_number", v)} />
             <Text label="Address" value={form.address ?? ""} onChange={(v) => set("address", v)} />
             <Select
-              label="Default GST Mode"
-              value={form.gst_mode_default ?? "inclusive"}
-              options={[["inclusive", "Inclusive"], ["exclusive", "Exclusive"]]}
-              onChange={(v) => set("gst_mode_default", v)}
-            />
-            <Select
               label="Place of Supply"
               value={form.place_of_supply ?? "intra"}
               options={[["intra", "Intra-state (CGST+SGST)"], ["inter", "Inter-state (IGST)"]]}
@@ -122,7 +117,25 @@ function BusinessSettings() {
             />
             <Text label="Invoice Prefix" value={form.invoice_prefix ?? ""} onChange={(v) => set("invoice_prefix", v)} />
             <Text label="Invoice Footer" value={form.invoice_footer ?? ""} onChange={(v) => set("invoice_footer", v)} />
+            <Select
+              label="Invoice Type (Print Format)"
+              value={form.invoice_type ?? "thermal_80"}
+              options={[["thermal_80", "Thermal 80mm"], ["thermal_58", "Thermal 58mm"], ["a4", "A4 (PDF preview)"]]}
+              onChange={(v) => set("invoice_type", v)}
+            />
+            <Select
+              label="Receipt Branding"
+              value={form.show_branding ? "show" : "hide"}
+              options={[["show", "Show “Powered by BillNova”"], ["hide", "Hide branding"]]}
+              onChange={(v) => setForm((f) => ({ ...f, show_branding: v === "show" }))}
+            />
           </div>
+          <p className="mt-2 max-w-2xl text-xs text-muted-foreground">
+            GST is always added on top of the selling price (selling ₹100 + 5% = ₹105) so your full markup is
+            preserved as profit. Whether each bill <strong>shows or hides</strong> the GST breakup is now chosen
+            per invoice at the billing counter (default Hide) — GST is always recorded internally and appears on
+            GST/HSN/auditor reports regardless.
+          </p>
           <div className="mt-4 flex items-center gap-3">
             <Button disabled={update.isPending} onClick={save}>
               {update.isPending ? "Saving…" : "Save Settings"}

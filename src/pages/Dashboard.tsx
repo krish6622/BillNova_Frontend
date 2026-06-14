@@ -36,8 +36,17 @@ const fade = {
 };
 
 export default function Dashboard() {
+  // Cashiers get a deliberately limited view (their own billing only); Owners get the
+  // full business analytics dashboard. Split into two components so each calls only the
+  // hooks/endpoints its role is allowed to reach (a cashier never hits owner-only APIs).
+  const role = useAuth((s) => s.user?.role);
+  return role === "CASHIER" ? <CashierDashboard /> : <OwnerDashboard />;
+}
+
+function OwnerDashboard() {
   const user = useAuth((s) => s.user);
-  const { data, isLoading } = useDashboard();
+  const { data: raw, isLoading } = useDashboard();
+  const data = raw && raw.scope === "owner" ? raw : undefined;
   const { data: sales } = useSales(1, 6);
   const { data: gst } = useReport("gst-summary", {});
   const { data: lowStock } = useLowStock();
@@ -192,6 +201,64 @@ export default function Dashboard() {
           </GlassCard>
         </motion.div>
       </div>
+    </div>
+  );
+}
+
+function CashierDashboard() {
+  const user = useAuth((s) => s.user);
+  const { data: raw, isLoading } = useDashboard();
+  const data = raw && raw.scope === "cashier" ? raw : undefined;
+
+  return (
+    <div className="space-y-6 p-6 lg:p-8">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Welcome back{user ? `, ${user.name.split(" ")[0]}` : ""} 👋
+        </h1>
+        <p className="text-sm text-muted-foreground">Here's your billing activity for today.</p>
+      </motion.div>
+
+      {isLoading || !data ? (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-28" />)}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Kpi i={0} icon={ReceiptText} label="My Bills Today" value={String(data.bills_generated)} sub="bills generated" tint="from-violet-500/20 to-violet-500/5" />
+          <Kpi i={1} icon={IndianRupee} label="Today's Collection" value={formatINR(data.today_collection)} sub={`${data.today_bills.count} bill(s)`} tint="from-emerald-500/20 to-emerald-500/5" />
+          <Kpi i={2} icon={Gauge} label="Avg / Bill" value={formatINR(data.bills_generated ? data.today_collection / data.bills_generated : 0)} sub="today" tint="from-blue-500/20 to-blue-500/5" />
+        </div>
+      )}
+
+      <motion.div variants={fade} custom={3} initial="hidden" animate="show">
+        <GlassCard className="p-6">
+          <h2 className="mb-4 font-semibold">My Recent Bills</h2>
+          {data && data.recent_bills.length > 0 ? (
+            <div className="divide-y divide-border">
+              {data.recent_bills.map((s) => (
+                <div key={s.id} className="flex items-center justify-between py-2.5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"><ReceiptText className="h-4 w-4" /></span>
+                    <div>
+                      <div className="font-mono text-sm">{s.invoice_number}</div>
+                      <div className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleString("en-IN")}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {s.status === "void" && (
+                      <span className="rounded-md bg-destructive/15 px-2 py-0.5 text-xs font-medium text-destructive">Void</span>
+                    )}
+                    <span className="text-sm font-semibold">{formatINR(s.grand_total)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyHint icon={ReceiptText} text="No bills yet — head to the POS to create one." />
+          )}
+        </GlassCard>
+      </motion.div>
     </div>
   );
 }

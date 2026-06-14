@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TBody, TD, TH, THead, TR, Table } from "@/components/ui/table";
-import { downloadReport, useReport, type ReportKey } from "@/features/reports/api";
+import { downloadAuditorExport, downloadReport, useReport, type ReportKey } from "@/features/reports/api";
 import { formatINR } from "@/lib/utils";
 
 const REPORTS: { key: ReportKey; label: string }[] = [
@@ -13,8 +13,16 @@ const REPORTS: { key: ReportKey; label: string }[] = [
   { key: "sales-monthly", label: "Monthly Sales" },
   { key: "gst-summary", label: "GST Summary" },
   { key: "hsn-summary", label: "HSN Summary" },
+  { key: "gst-sales-register", label: "GST Sales Register" },
+  { key: "non-gst-sales-register", label: "Non-GST Sales Register" },
+  { key: "gst-customer-register", label: "GST Customer Register" },
   { key: "stock", label: "Current Stock" },
 ];
+
+// Reports driven by a from/to date range (everything except daily, monthly, stock).
+const RANGE_REPORTS = new Set<ReportKey>([
+  "gst-summary", "hsn-summary", "gst-sales-register", "non-gst-sales-register", "gst-customer-register",
+]);
 
 const today = new Date();
 const iso = (d: Date) => d.toISOString().slice(0, 10);
@@ -38,6 +46,7 @@ export default function Reports() {
           : { from_date: fromDate, to_date: toDate };
 
   const { data, isLoading, isError } = useReport(report, params);
+  const rangeParams = { from_date: fromDate, to_date: toDate };
 
   return (
     <div className="p-8">
@@ -52,6 +61,9 @@ export default function Reports() {
           </Button>
           <Button variant="outline" onClick={() => downloadReport(report, "pdf", params)}>
             Export PDF
+          </Button>
+          <Button onClick={() => downloadAuditorExport(rangeParams)} title="GST + Non-GST registers and combined summary as a .zip">
+            Auditor Export
           </Button>
         </div>
       </div>
@@ -85,7 +97,7 @@ export default function Reports() {
             </Field>
           </>
         )}
-        {(report === "gst-summary" || report === "hsn-summary") && (
+        {RANGE_REPORTS.has(report) && (
           <>
             <Field label="From">
               <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
@@ -157,6 +169,42 @@ function ReportTable({ report, data }: { report: ReportKey; data: any }) {
       <SimpleTable
         head={["HSN", "Qty", "Taxable", "GST"]}
         rows={data.rows.map((r: any) => [r.hsn_code, String(r.quantity), formatINR(r.taxable), formatINR(r.gst)])}
+      />
+    );
+  }
+  if (report === "gst-sales-register") {
+    return (
+      <SimpleTable
+        head={["Invoice No", "Customer", "GSTIN", "Taxable", "GST", "Total"]}
+        rows={[
+          ...data.rows.map((r: any) => [
+            r.invoice_number, r.customer_name, r.gstin || "—",
+            formatINR(r.taxable), formatINR(r.gst), formatINR(r.total),
+          ]),
+          ["TOTAL", "", "", formatINR(data.totals.taxable), formatINR(data.totals.gst), formatINR(data.totals.total)],
+        ]}
+      />
+    );
+  }
+  if (report === "non-gst-sales-register") {
+    return (
+      <SimpleTable
+        head={["Invoice No", "Customer", "Total"]}
+        rows={[
+          ...data.rows.map((r: any) => [r.invoice_number, r.customer_name, formatINR(r.total)]),
+          ["TOTAL", "", formatINR(data.totals.total)],
+        ]}
+      />
+    );
+  }
+  if (report === "gst-customer-register") {
+    return (
+      <SimpleTable
+        head={["Invoice No", "Customer", "GSTIN", "Total"]}
+        rows={[
+          ...data.rows.map((r: any) => [r.invoice_number, r.customer_name, r.gstin || "—", formatINR(r.total)]),
+          ["TOTAL", "", "", formatINR(data.totals.total)],
+        ]}
       />
     );
   }

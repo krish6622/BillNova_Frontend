@@ -11,15 +11,23 @@ export interface PaymentInput {
   reference?: string | null;
 }
 
+export type BillingType = "WITH_GST" | "WITHOUT_GST";
+
 export interface PreviewRequest {
   gst_mode?: "inclusive" | "exclusive" | null;
   place_of_supply?: "intra" | "inter" | null;
   items: SaleItemInput[];
   bill_discount?: number;
+  billing_type?: BillingType;
 }
 
 export interface CreateSaleRequest extends PreviewRequest {
   notes?: string | null;
+  customer_name?: string | null;
+  is_gst_customer?: boolean;
+  customer_mobile?: string | null;
+  customer_gstin?: string | null;
+  show_gst_on_invoice?: boolean;
   payments: PaymentInput[];
 }
 
@@ -51,11 +59,13 @@ export interface PreviewLine {
 export interface PreviewResponse {
   gst_mode: string;
   place_of_supply: string;
+  billing_type: BillingType;
   items: PreviewLine[];
   totals: Totals;
 }
 
 export interface SaleItem extends PreviewLine {
+  unit: string;
   notes: string | null;
 }
 
@@ -70,8 +80,17 @@ export interface Sale extends Totals {
   invoice_number: string;
   gst_mode: string;
   place_of_supply: string;
+  status: "active" | "void";
+  customer_name: string | null;
+  is_gst_customer: boolean;
+  customer_mobile: string | null;
+  customer_gstin: string | null;
+  billing_type: BillingType;
+  cashier_name: string | null;
+  show_gst_on_invoice: boolean;
   notes: string | null;
   created_at: string;
+  voided_at: string | null;
   items: SaleItem[];
   payments: Payment[];
 }
@@ -88,6 +107,10 @@ export interface InvoiceBusiness {
   gst_number: string | null;
   mobile: string;
   email: string;
+  address: string | null;
+  invoice_footer: string | null;
+  invoice_type: "thermal_80" | "thermal_58" | "a4";
+  show_branding: boolean;
 }
 
 export interface Invoice {
